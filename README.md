@@ -18,3 +18,7 @@ Specifications noted here temporarily.
 - [Electronic Speed Controllers](https://manuals.plus/asin/B09G5S9YYG.pdf)
     - [ESC wiring](https://ardupilot.org/copter/docs/connect-escs-and-motors.html)
     - [ESC calibration](https://ardupilot.org/copter/docs/esc-calibration.html)
+
+# Motor configuration
+Silver cap (righty-tighty lefty-loosey): CW
+Black cap (lefty-tighty righty-loosey): CCW
