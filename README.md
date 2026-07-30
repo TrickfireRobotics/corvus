@@ -21,4 +21,5 @@ Specifications noted here temporarily.
 
 # Motor configuration
 Silver cap (righty-tighty lefty-loosey): CW
+
 Black cap (lefty-tighty righty-loosey): CCW
