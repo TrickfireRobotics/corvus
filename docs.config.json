@@ -1,6 +1,6 @@
 {
     "$schema": "https://docs.trickfirerobotics.com/docs.config.schema.json",
-    "name": "TrickFire Drone",
+    "name": "Corvus",
     "description": "Codebase for the drone used to communicate with the rover",
     "icon": "Drone"
 }
