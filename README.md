@@ -7,6 +7,7 @@ Specifications noted here temporarily.
 ## Ground station
 - [QGroundControl](https://qgroundcontrol.com/)
     - [Installation](https://docs.qgroundcontrol.com/Stable_V5.0/en/qgc-user-guide/getting_started/download_and_install.html)
+- Create flight modes (have base station announce which mode you're in)
 
 ## Autopilot system
 - [ArduPilot](https://ardupilot.org/copter/index.html)
