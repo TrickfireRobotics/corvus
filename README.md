@@ -24,3 +24,6 @@ Specifications noted here temporarily.
 Silver cap (righty-tighty lefty-loosey): CW
 
 Black cap (lefty-tighty righty-loosey): CCW
+
+
+<img width="263" height="178" alt="image" src="https://github.com/user-attachments/assets/04791ed8-e940-48d5-9d5a-7b58539f837e" />
