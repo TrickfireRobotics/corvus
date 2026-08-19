@@ -1,5 +1,5 @@
-# trickfire-drone
-The repository for TrickFire's new drone that is coming soon...
+# Corvus
+The repository for TrickFire's new drone to be used as a communications bridge between the rover and base station.
 
 Specifications noted here temporarily.
 
