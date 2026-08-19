@@ -15,7 +15,8 @@ Specifications noted here temporarily.
 
 
 # Hardware
-- [Pixhawk Px4 Pix 2.4.8 32 Bit Flight Controller](https://ardupilot.org/copter/docs/common-pixhawk-wiring-and-quick-start.html)
+- ~~[Pixhawk Px4 Pix 2.4.8 32 Bit Flight Controller](https://ardupilot.org/copter/docs/common-pixhawk-wiring-and-quick-start.html)~~
+- [Pixhawk 6C Mini](https://docs.holybro.com/autopilot/pixhawk-6c-mini/pixhawk-6c-mini-ports)
 - [Electronic Speed Controllers](https://manuals.plus/asin/B09G5S9YYG.pdf)
     - [ESC wiring](https://ardupilot.org/copter/docs/connect-escs-and-motors.html)
     - [ESC calibration](https://ardupilot.org/copter/docs/esc-calibration.html)
