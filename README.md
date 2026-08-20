@@ -12,6 +12,8 @@ Specifications noted here temporarily.
 ## Autopilot system
 - [ArduPilot](https://ardupilot.org/copter/index.html)
     - [Radio Control Calibration](https://ardupilot.org/copter/docs/common-radio-control-calibration.html#common-radio-control-calibration)
+- PX4
+- https://docs.px4.io/main/en/companion_computer/pixhawk_rpi
 
 
 # Hardware
