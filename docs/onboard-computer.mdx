@@ -1,0 +1,143 @@
+---
+title: Onboard Computer
+description: The onboard Raspberry Pi and its containerized software stack
+---
+
+<Callout type="info" title="Onboard Computer">
+    The Raspberry Pi that rides next to the Pixhawk and bridges it to the network
+</Callout>
+
+## What it does
+
+The Pi sits on Corvus next to the [flight controller](./pixhawk.mdx). You SSH
+into it, and it runs the software that turns the Pixhawk's (PX4) serial link
+into a network connection [QGroundControl](./ground-station.mdx) can use.
+
+Right now that software is just **mavlink-router**: it reads MAVLink from the
+Pixhawk over USB and re-publishes it as UDP on port 14550 (and TCP 5760). Video
+streaming, ROS 2 nodes, logging, and a status dashboard get added alongside it
+later.
+
+Everything we write runs in Docker containers so the same stack deploys to
+Corvus and to a dev laptop unchanged. It lives in `docker/` at the repo root.
+
+## Host vs. container
+
+Device bootstrap stays on the Pi's host OS; everything that is our software is a
+container.
+
+| On the host | In containers |
+| --- | --- |
+| Docker engine, base OS | mavlink-router |
+| NetworkManager WiFi access point | video streaming *(later)* |
+| Stable serial name (udev rule) | ROS 2 nodes *(later)* |
+| `onboard-stack` boot unit | telemetry logging *(later)* |
+
+## Layout
+
+```
+docker/
+├── docker-compose.yml         one service now; more get added here
+├── Dockerfile                 builds mavlink-router, ~40 MB image
+├── mavlink-router/
+│   └── main.conf              mavlink-router endpoints
+├── 99-autopilot.rules         udev -> /dev/autopilot
+├── onboard-stack.service      brings the stack up at boot
+└── setup-hotspot.sh           Pi onboard WiFi as an access point
+```
+
+When the long-range radios are fitted, their endpoints get added to
+`main.conf` (there are commented stubs for the 900 MHz backhaul and the
+433 MHz rover link) and mavlink-router routes between all of them by system ID.
+
+## First-time setup on a Pi
+
+Do this while the Pi still has internet (home WiFi or ethernet).
+
+```bash
+# 1. Get the repo onto the Pi
+sudo mkdir -p /opt/corvus && sudo chown "$USER" /opt/corvus
+git clone https://github.com/TrickfireRobotics/trickfire-drone.git /opt/corvus
+cd /opt/corvus/docker
+
+# 2. Stable serial name for the flight controller
+udevadm info -a -n /dev/ttyACM0 | grep -E 'idVendor|idProduct|serial'   # note values
+$EDITOR 99-autopilot.rules                                              # set the real IDs
+sudo cp 99-autopilot.rules /etc/udev/rules.d/
+sudo udevadm control --reload && sudo udevadm trigger
+ls -l /dev/autopilot                                                    # should exist
+
+# 3. Docker log rotation so the SD card does not fill
+echo '{ "log-driver": "json-file", "log-opts": { "max-size": "10m", "max-file": "3" } }' \
+  | sudo tee /etc/docker/daemon.json
+sudo systemctl restart docker
+
+# 4. Field WiFi (optional, stopgap until the 900 MHz link is in)
+sudo ./setup-hotspot.sh corvus 'a-real-password'
+
+# 5. Bring the stack up now and on every boot
+docker compose pull                     # or: docker compose build
+sudo cp onboard-stack.service /etc/systemd/system/
+sudo systemctl enable --now docker onboard-stack
+```
+
+The compose file defaults to `/dev/autopilot` and the `latest` image tag. To
+override either, set it in the environment (`AUTOPILOT_DEV=... docker compose
+up -d`) or add an `Environment=` line to `onboard-stack.service`.
+
+The `onboard-stack` unit runs `docker compose up -d` on every boot, and the
+service is set to `restart: unless-stopped`, so the link comes back by itself
+after a power cycle or a crash.
+
+Verify after a reboot:
+
+```bash
+systemctl is-active docker onboard-stack
+docker compose ps
+docker compose logs -f mavlink-router
+```
+
+## Connecting
+
+1. Join the Pi's WiFi (`corvus`), or put both machines on the same network.
+2. `ssh <user>@corvus.local` -- set the hostname once with
+   `sudo hostnamectl set-hostname corvus`.
+3. Open QGroundControl -- it auto-connects on UDP 14550. Otherwise add a UDP
+   link to `10.42.0.1:14550` or a TCP link to `10.42.0.1:5760`.
+
+<Callout type="warning" title="Field WiFi is temporary">
+    Onboard-WiFi AP range is only ~20-50 m. It is fine for bench work and
+    close-in test flights; the real link is covered in
+    [Communications](./comms.mdx).
+</Callout>
+
+## Publishing images
+
+Multi-arch so it runs on the Pi (arm64) and dev laptops (amd64):
+
+```bash
+docker buildx build --platform linux/arm64,linux/amd64 \
+  -f docker/Dockerfile \
+  -t ghcr.io/trickfirerobotics/corvus-mavlink-router:v1.0.0 \
+  -t ghcr.io/trickfirerobotics/corvus-mavlink-router:latest \
+  --push .
+```
+
+Other devices then only need the repo: `docker compose pull && docker compose up -d`.
+Pin a real version on anything that flies -- set `TAG=v1.0.0` in the environment
+or in `onboard-stack.service` rather than running `latest`.
+
+## Developing without hardware
+
+Run PX4 SITL and point the stack at it instead of a real Pixhawk:
+
+```bash
+# terminal 1 - PX4 SITL (broadcasts MAVLink to udp 14550)
+make px4_sitl gz_x500
+
+# terminal 2 - QGroundControl connects to SITL directly on 14550
+```
+
+mavlink-router isn't needed in the loop for bare SITL. Once there's real
+onboard software to exercise, add a `[UdpEndpoint]` in `main.conf` pointing at
+PX4's `udp:14540` and run the container against that.

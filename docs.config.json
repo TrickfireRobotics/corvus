@@ -2,5 +2,15 @@
     "$schema": "https://docs.trickfirerobotics.com/docs.config.schema.json",
     "name": "Corvus",
     "description": "Codebase for the drone used to communicate with the rover",
-    "icon": "Drone"
+    "icon": "Drone",
+    "sidebar": [
+        { "label": "Communications", "slug": "comms" },
+        { "label": "Ground Station", "slug": "ground-station" },
+        { "label": "Onboard Computer", "slug": "onboard-computer" },
+        { "label": "Pixhawk", "slug": "pixhawk" },
+        { "label": "Remote Controller", "slug": "remote-control" },
+        { "label": "Physical Drone", "slug": "physical-drone" },
+        { "label": "Wiring", "slug": "wiring" },
+        { "label": "Safety", "slug": "safety" }
+    ]
 }

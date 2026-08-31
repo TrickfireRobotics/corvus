@@ -10,15 +10,21 @@ Specifications noted here temporarily.
 - Create flight modes (have base station announce which mode you're in)
 
 ## Autopilot system
-- [ArduPilot](https://ardupilot.org/copter/index.html)
-    - [Radio Control Calibration](https://ardupilot.org/copter/docs/common-radio-control-calibration.html#common-radio-control-calibration)
-- PX4
-- https://docs.px4.io/main/en/companion_computer/pixhawk_rpi
+Corvus runs **PX4**.
+- [PX4 Autopilot](https://docs.px4.io/main/en/)
+    - [Pixhawk + Raspberry Pi companion](https://docs.px4.io/main/en/companion_computer/pixhawk_rpi)
+- ArduPilot (reference / not used): [Copter docs](https://ardupilot.org/copter/index.html), [RC calibration](https://ardupilot.org/copter/docs/common-radio-control-calibration.html#common-radio-control-calibration)
+
+## Onboard computer
+Onboard Raspberry Pi that bridges the Pixhawk to the network (mavlink-router in Docker).
+- Stack: [`docker/`](./docker)
+- Setup and usage: [Onboard Computer docs](./docs/onboard-computer.mdx)
 
 
 # Hardware
 - ~~[Pixhawk Px4 Pix 2.4.8 32 Bit Flight Controller](https://ardupilot.org/copter/docs/common-pixhawk-wiring-and-quick-start.html)~~
 - [Pixhawk 6C Mini](https://docs.holybro.com/autopilot/pixhawk-6c-mini/pixhawk-6c-mini-ports)
+- Raspberry Pi (onboard computer)
 - [Electronic Speed Controllers](https://manuals.plus/asin/B09G5S9YYG.pdf)
     - [ESC wiring](https://ardupilot.org/copter/docs/connect-escs-and-motors.html)
     - [ESC calibration](https://ardupilot.org/copter/docs/esc-calibration.html)

@@ -1,5 +1,8 @@
 # Basic
 .DS_Store
 
+# Docker envs
+**/*.env
+
 # trickfire-docs
 dist/

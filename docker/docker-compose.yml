@@ -1,0 +1,17 @@
+services:
+  mavlink-router:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    image: ghcr.io/trickfirerobotics/corvus-mavlink-router:${TAG:-latest}
+    container_name: corvus-mavlink-router
+    restart: unless-stopped
+    environment:
+      TZ: ${TZ:-UTC}
+    # Host networking is required: UDP broadcast and QGroundControl
+    # auto-connect do not survive Docker's NAT bridge.
+    network_mode: host
+    devices:
+      - "${AUTOPILOT_DEV:-/dev/autopilot}:/dev/autopilot"
+    volumes:
+      - "./mavlink-router/main.conf:/config/main.conf:ro"
