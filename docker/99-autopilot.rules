@@ -1,15 +1,17 @@
 # Stable device name for the flight controller, independent of USB
 # enumeration order. docker-compose passes /dev/autopilot into the container.
 #
-# Find your board's values FIRST and edit the line below to match:
+# Verify the ids match your board before relying on this:
 #   udevadm info -a -n /dev/ttyACM0 | grep -E 'idVendor|idProduct|serial'
+# The first idVendor/idProduct pair in that output is the Pixhawk; pairs
+# below it are the USB hub / root hub.
 #
 # then:
 #   sudo cp docker/99-autopilot.rules /etc/udev/rules.d/
 #   sudo udevadm control --reload && sudo udevadm trigger
 #
-# PX4 on the Pixhawk 6C mini enumerates with Holybro's USB vendor ID (3162).
-# The product ID below is a guess - verify it with the udevadm line above.
-# Add ATTRS{serial}=="..." if a device ever has more than one board attached.
+# 3185:0038 = Holybro Pixhawk 6C mini running PX4 (this board reports serial "0",
+# so match on vendor/product only). Add ATTRS{serial}=="..." if you ever run
+# more than one board on the same Pi.
 
-SUBSYSTEM=="tty", ATTRS{idVendor}=="3162", ATTRS{idProduct}=="0047", SYMLINK+="autopilot"
+SUBSYSTEM=="tty", ATTRS{idVendor}=="3185", ATTRS{idProduct}=="0038", SYMLINK+="autopilot"
