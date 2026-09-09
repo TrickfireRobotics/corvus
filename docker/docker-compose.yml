@@ -15,3 +15,9 @@ services:
       - "${AUTOPILOT_DEV:-/dev/autopilot}:/dev/autopilot"
     volumes:
       - "./mavlink-router/main.conf:/config/main.conf:ro"
+    # Keep the logs from taking up too much memory on the pi
+    logging:
+      driver: local
+      options:
+        max-size: "5m"
+        max-file: "3"
